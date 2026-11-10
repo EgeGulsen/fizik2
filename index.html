@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics 2 – Sınav Hazırlık</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1117;--panel:#171a23;--panel2:#1f2330;--border:#2a2f3d;--text:#e6e8ee;--muted:#9aa1b2;
+  --accent:#4f8cff;--accent2:#7c5cff;--ok:#2ecc8a;--bad:#ff5c6c;--warn:#ffb648;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+a{color:var(--accent)}
+.app{display:flex;min-height:100vh}
+nav{width:260px;background:var(--panel);border-right:1px solid var(--border);padding:18px 14px;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+nav h1{font-size:17px;margin:4px 8px 16px;letter-spacing:.3px}
+nav h1 span{color:var(--accent)}
+nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:14px 8px 6px}
+nav button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);padding:8px 10px;border-radius:8px;cursor:pointer;font-size:14px;font-family:inherit}
+nav button:hover{background:var(--panel2)}
+nav button.active{background:var(--accent);color:#fff}
+nav button .pct{float:right;font-size:11px;color:var(--muted)}
+nav button.active .pct{color:#dfe8ff}
+main{flex:1;padding:28px 36px;max-width:980px}
+.menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:20;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:14px}
+@media(max-width:800px){
+  nav{position:fixed;left:-280px;z-index:15;transition:left .2s}
+  nav.open{left:0}
+  .menu-btn{display:block}
+  main{padding:56px 16px 24px}
+}
+h2{font-size:26px;margin:0 0 6px}
+h3{font-size:18px;margin:26px 0 8px;color:#fff}
+h4{margin:16px 0 6px;color:var(--accent)}
+.sub{color:var(--muted);margin-bottom:18px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin:14px 0}
+.card.key{border-left:4px solid var(--accent)}
+.card.warn{border-left:4px solid var(--warn)}
+.card.tip{border-left:4px solid var(--ok)}
+.formula{font-family:'JetBrains Mono',monospace;background:var(--panel2);padding:10px 14px;border-radius:8px;margin:6px 0;display:block;font-size:14px;overflow-x:auto}
+ul{padding-left:20px}li{margin:4px 0}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn.sec{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
+.btn.ok{background:var(--ok);color:#0b2a1c}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.tcard{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+.tcard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.tcard b{display:block;font-size:15px;margin-bottom:4px}
+.tcard small{color:var(--muted)}
+.bar{height:6px;background:var(--panel2);border-radius:4px;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok)}
+/* quiz */
+.q{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px}
+.q .meta{color:var(--muted);font-size:13px;margin-bottom:8px;display:flex;justify-content:space-between}
+.q .stem{font-size:17px;font-weight:500;margin-bottom:16px;white-space:pre-line}
+.opt{display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:9px;margin:7px 0;cursor:pointer;font-size:15px;font-family:inherit}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.sel{border-color:var(--accent);background:#1c2742}
+.opt.right{border-color:var(--ok);background:#153327}
+.opt.wrong{border-color:var(--bad);background:#3a1c22}
+.expl{margin-top:14px;padding:14px;border-radius:9px;background:var(--panel2);border-left:4px solid var(--accent);white-space:pre-line;font-size:14px}
+.expl.good{border-color:var(--ok)}.expl.badx{border-color:var(--bad)}
+.timer{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--warn)}
+.score{font-size:42px;font-weight:700}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;background:var(--panel2);color:var(--muted);margin-right:6px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{border:1px solid var(--border);padding:8px 10px;text-align:left}
+th{background:var(--panel2)}
+.small{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<button class="menu-btn" onclick="document.querySelector('nav').classList.toggle('open')">☰ Menü</button>
+<div class="app">
+<nav id="nav"></nav>
+<main id="main"></main>
+</div>
+
+<script>
+/* ===================== KONULAR ===================== */
+const TOPICS = [
+{id:'coulomb',name:'1. Yük ve Coulomb Kanunu',short:'Coulomb',
+html:`
+<h3>Elektrik yükü</h3>
+<ul>
+<li>İki tür yük var: pozitif ve negatif. <b>Aynı yükler iter, zıt yükler çeker.</b></li>
+<li>Yük <b>kuantalıdır</b>: q = n·e, e = 1.6×10⁻¹⁹ C (elektronun yükü −e, protonun +e).</li>
+<li>Yük <b>korunur</b>: kapalı sistemde toplam yük değişmez (yük yaratılmaz, yalnızca aktarılır).</li>
+<li><b>İletken</b>: yükler serbestçe hareket eder (metaller). <b>Yalıtkan (dielektrik)</b>: yükler yerinde kalır (cam, plastik).</li>
+<li><b>İndüksiyonla yükleme</b>: yüklü bir cisim yaklaştırılınca iletkende yükler ayrılır (temas olmadan).</li>
+</ul>
+<h3>Coulomb Kanunu</h3>
+<span class="formula">F = k · |q₁ q₂| / r²        k = 1/(4πε₀) = 9×10⁹ N·m²/C²        ε₀ = 8.85×10⁻¹² C²/(N·m²)</span>
+<ul>
+<li>Kuvvet iki yükü birleştiren <b>doğru boyunca</b>; büyüklüğü yüklerin çarpımıyla doğru, <b>uzaklığın karesiyle ters</b> orantılı.</li>
+<li>Newton'un 3. yasası geçerli: q₁'in q₂'ye uyguladığı kuvvet = q₂'nin q₁'e uyguladığı kuvvet (zıt yönlü).</li>
+<li><b>Bir ortam içinde (dielektrik):</b> F = k q₁q₂ / (ε_r r²). Yani ε = ε_r ε₀ kullanılır, kuvvet ε_r kat azalır.</li>
+</ul>
+<h3>Süperpozisyon ilkesi</h3>
+<p>Birden fazla yük varsa, bir yüke etkiyen net kuvvet, diğer yüklerin <b>tek tek</b> uyguladığı kuvvetlerin <b>vektörel toplamıdır</b>. Aynı şey elektrik alan ve potansiyel için de geçerlidir (potansiyel skaler olduğu için düz toplama).</p>
+<div class="card warn"><b>Sık hatalar</b>
+<ul>
+<li>Uzaklık 2 katına çıkınca kuvvet 1/4'e düşer; yarıya inince <b>4 katına</b> çıkar (r² unutma!).</li>
+<li>Her iki yükü 2 katına çıkarmak kuvveti <b>4</b> katına çıkarır.</li>
+<li>Kuvvet hesabında yüklerin işaretini büyüklüğe katma; işaret yalnızca yönü (çekme/itme) belirler.</li>
+</ul></div>
+<div class="card tip"><b>Sınavda çıkan "step by step" soru tipi:</b> "q₁=3×10⁻⁸ C, q₂=−5×10⁻⁵ C, 1 m uzaklıkta, ε_r=0.5. Kuvveti bulun."
+<br>1) Formülü yaz: F = k|q₁q₂|/(ε_r r²). 2) Değerleri koy: F = 9×10⁹ · (3×10⁻⁸)(5×10⁻⁵) / (0.5 · 1²). 3) Hesapla: 9×10⁹ · 1.5×10⁻¹² / 0.5 = <b>0.027 N</b>. 4) Yorumla: yükler zıt işaretli → <b>çekici</b> kuvvet.</div>
+`,
+qs:[
+{q:"Coulomb's law states that the force between two point charges is:",o:["Proportional to the product of the charges and inversely proportional to the square of the distance","Proportional to the sum of the charges and inversely proportional to the distance","Inversely proportional to the product of the charges","Independent of the distance between them"],a:0,e:"F = k·q₁q₂/r². Çarpımla doğru, uzaklığın KARESİYLE ters orantılı."},
+{q:"If the distance between two charged objects is halved, what happens to the electrostatic force between them?",o:["It doubles","It is reduced to one-fourth","It remains the same","It increases by a factor 4"],a:3,e:"F ∝ 1/r². r → r/2 olunca 1/(r/2)² = 4/r² → kuvvet 4 katına çıkar. (Eski sınav sorusu.)"},
+{q:"Two point charges q₁ = 3×10⁻⁸ C and q₂ = −5×10⁻⁵ C are placed 1 m apart in a material with relative permittivity ε_r = 0.5. The force between them is:",o:["0.0135 N, repulsive","0.027 N, attractive","0.027 N, repulsive","0.0135 N, attractive"],a:1,e:"F = k|q₁q₂|/(ε_r r²) = 9×10⁹·(3×10⁻⁸·5×10⁻⁵)/(0.5·1) = 9×10⁹·1.5×10⁻¹²/0.5 = 0.027 N. Zıt işaretli → çekici. (Eski sınavın açık uçlu sorusu.)"},
+{q:"The SI unit of electric charge is:",o:["Ampere","Volt","Coulomb","Farad"],a:2,e:"Yük birimi Coulomb (C). 1 C = 1 A·s."},
+{q:"The principle of superposition in electrostatics states that:",o:["The total force on a charge equals the vector sum of the forces exerted by each other charge individually","Charges cancel each other out when placed close together","The force between two charges depends on the presence of other charges","The electric field of a system is the product of individual fields"],a:0,e:"Süperpozisyon: net kuvvet (ve net alan) tek tek kuvvetlerin VEKTÖREL toplamı. İki yük arasındaki kuvvet başka yüklerin varlığından etkilenmez."},
+{q:"Which statement about electric charge is incorrect?",o:["Charge is quantized in units of e","Like charges repel, unlike charges attract","Total charge of an isolated system is conserved","An electron has a positive charge"],a:3,e:"Elektron NEGATİF (−e), proton pozitif (+e) yüklüdür."},
+{q:"Both charges in a pair are doubled and the distance between them is also doubled. The force:",o:["Doubles","Remains the same","Becomes four times larger","Becomes one-fourth"],a:1,e:"Pay 2·2 = 4 kat artar, payda (2r)² = 4 kat artar → değişmez."},
+{q:"The electrostatic constant k = 1/(4πε₀) has the approximate value:",o:["8.85×10⁻¹² N·m²/C²","9×10⁹ N·m²/C²","1.6×10⁻¹⁹ N·m²/C²","6.67×10⁻¹¹ N·m²/C²"],a:1,e:"k ≈ 9×10⁹ N·m²/C². 8.85×10⁻¹² ise ε₀'dır. 6.67×10⁻¹¹ Newton'un G sabitidir — karıştırma!"},
+{q:"When the same two charges are placed in a medium with relative permittivity ε_r = 4 instead of vacuum, the force between them:",o:["Increases 4 times","Decreases 4 times","Increases 16 times","Does not change"],a:1,e:"Ortamda F = kq₁q₂/(ε_r r²) → ε_r kat azalır."},
+{q:"A metal sphere is charged by induction using a positively charged rod (without touching) and then grounded while the rod is near. The sphere ends up:",o:["Positively charged","Negatively charged","Neutral","Charged only on the side far from the rod"],a:1,e:"Pozitif çubuk elektronları çeker; topraklama ile toprak­tan ek elektron gelir. Çubuk uzaklaştırılınca küre negatif kalır."},
+]},
+
+{id:'field',name:'2. Elektrik Alan ve Dipol',short:'E-Alan',
+html:`
+<h3>Elektrik alan tanımı</h3>
+<span class="formula">E = F / q₀      (birim: N/C = V/m)        Nokta yük için:  E = k·|q| / r²</span>
+<ul>
+<li>Elektrik alan, birim pozitif test yüküne etkiyen kuvvettir. <b>Vektördür.</b></li>
+<li>Yönü: <b>pozitif yükten dışa</b>, <b>negatif yüke doğru içe</b>.</li>
+<li>Bir yüke etkiyen kuvvet: <b>F = qE</b>. Pozitif yük alan yönünde, negatif yük alana zıt yönde kuvvet görür.</li>
+<li>Süperpozisyon: toplam alan tek tek alanların vektörel toplamı.</li>
+</ul>
+<h3>Alan çizgileri</h3>
+<ul>
+<li>Pozitif yükten başlar, negatif yükte biter. <b>Asla kesişmezler.</b></li>
+<li>Çizgilerin sık olduğu yerde alan <b>kuvvetli</b>dir.</li>
+<li>Düzgün (uniform) alanda çizgiler paralel ve eşit aralıklıdır (örn. paralel plakalı kondansatör içi).</li>
+</ul>
+<h3>Elektrik dipol</h3>
+<span class="formula">p = q·d   (dipol momenti, −'den +'ya yönelir)        Uzak noktada E ∝ 1/r³       Torque: τ = p × E  →  |τ| = pE sinθ        U = −p·E = −pE cosθ</span>
+<ul>
+<li>Dipol: eşit büyüklükte zıt iki yük (+q, −q), aralarında d uzaklığı.</li>
+<li>Dipolden uzakta alan <b>uzaklıkla azalır (1/r³)</b> — nokta yükten (1/r²) daha hızlı azalır.</li>
+<li>Düzgün alanda dipole net kuvvet sıfır ama <b>tork</b> vardır; dipol alanla hizalanmaya çalışır (θ=0 kararlı denge, minimum enerji).</li>
+</ul>
+<h3>Düzgün alanda yüklü parçacık</h3>
+<span class="formula">a = qE/m        v = v₀ + at        x = v₀t + ½at²        (Newton mekaniği aynen geçerli)</span>
+<h3>Sürekli yük dağılımları (temel sonuçlar)</h3>
+<ul>
+<li>Sonsuz düz çizgi yükü (λ): E = 2kλ/r = λ/(2πε₀r)</li>
+<li>Sonsuz düzlem (σ): E = σ/(2ε₀) — uzaklığa bağlı değil!</li>
+<li>İletken yüzeyi hemen dışında: E = σ/ε₀</li>
+<li>Halka ekseninde: E = kQx/(x²+R²)^{3/2}</li>
+</ul>
+<div class="card tip"><b>Sınav tipi hesap:</b> q = +2 μC, m = 5×10⁻⁶ kg, E = 5000 N/C, durgun başlıyor, 2 s sonra hız? → a = qE/m = (2×10⁻⁶·5000)/(5×10⁻⁶) = 2000 m/s² → v = at = <b>4000 m/s</b>.</div>
+`,
+qs:[
+{q:"The electric field in a point external to a dipole, and due to a dipole is:",o:["Uniform everywhere","Stronger at greater distances","Decreases with distance","Independent of the charge magnitude"],a:2,e:"Dipol alanı uzaklıkla azalır (uzakta ~1/r³). (Eski sınav sorusu.)"},
+{q:"The electric field lines around a negative point charge:",o:["Point radially outward","Point radially inward","Form closed loops","Are parallel"],a:1,e:"Alan çizgileri negatif yüke doğru içe yönelir. (Eski sınav sorusu.)"},
+{q:"What is the SI unit of electric field?",o:["Newton (N)","Volt (V)","Volt/meter (V/m)","Newton × Coulomb"],a:2,e:"E birimi N/C = V/m. (Eski sınav sorusu.)"},
+{q:"A particle with charge q = +2 μC and mass 5×10⁻⁶ kg is placed in a uniform electric field of 5000 N/C along the x-axis. Starting from rest, its velocity after 2 seconds is:",o:["2000 m/s","3000 m/s","4000 m/s","5000 m/s"],a:2,e:"a = qE/m = (2×10⁻⁶ · 5000)/(5×10⁻⁶) = 2000 m/s². v = a·t = 4000 m/s. (Eski sınav sorusu.)"},
+{q:"The electric field at a distance r from a point charge q is E. At a distance 3r the field is:",o:["E/3","E/9","3E","9E"],a:1,e:"E ∝ 1/r² → (1/3)² = 1/9."},
+{q:"Which statement about electric field lines is incorrect?",o:["They start on positive charges and end on negative charges","They never cross","Their density is proportional to the field strength","They are always parallel to equipotential surfaces"],a:3,e:"Alan çizgileri eşpotansiyel yüzeylere her zaman DİKtir, paralel değil."},
+{q:"An electron is placed in an electric field pointing in the +x direction. The force on the electron is:",o:["In the +x direction","In the −x direction","Zero","Perpendicular to the field"],a:1,e:"F = qE; elektron negatif → kuvvet alana ZIT yönde (−x)."},
+{q:"An electric dipole placed in a uniform electric field experiences:",o:["A net force but no torque","A torque but no net force","Both a net force and a torque","Neither force nor torque"],a:1,e:"Düzgün alanda +q ve −q'ya eşit zıt kuvvetler → net kuvvet 0, ama tork τ = pE sinθ var."},
+{q:"The electric field due to an infinite plane sheet of charge with surface density σ is:",o:["σ/ε₀, decreasing with distance","σ/(2ε₀), independent of distance","kσ/r²","Zero everywhere"],a:1,e:"Sonsuz düzlem: E = σ/(2ε₀), uzaklıktan bağımsız. İletkenin yüzeyi dışında ise σ/ε₀."},
+{q:"Two equal positive charges are placed at the ends of a line segment. The electric field at the midpoint is:",o:["Maximum","Zero","Directed toward one of the charges","Equal to 2kq/r²"],a:1,e:"Eşit büyüklükte, zıt yönlü iki alan vektörü toplanınca sıfır olur. (Potansiyel ise sıfır OLMAZ: V = 2kq/r.)"},
+{q:"The potential energy of a dipole p in a uniform field E is minimum when:",o:["p is perpendicular to E","p is antiparallel to E","p is parallel to E","It does not depend on orientation"],a:2,e:"U = −pE cosθ; θ = 0 (paralel) iken U = −pE minimum → kararlı denge."},
+]},
+
+{id:'gauss',name:'3. Elektrik Akı ve Gauss Kanunu',short:'Gauss',
+html:`
+<h3>Elektrik akısı (flux)</h3>
+<span class="formula">Φ_E = E·A·cosθ   (düzgün alan, düz yüzey)        Genel:  Φ_E = ∮ E·dA        Birim: N·m²/C (= V·m)</span>
+<ul>
+<li>θ: alan ile yüzeyin <b>normali</b> arasındaki açı. Alan yüzeye dik geçiyorsa (θ=0) akı maksimum; yüzeye paralel ise (θ=90°) akı sıfır.</li>
+<li>Akı, yüzeyden geçen alan çizgisi sayısının ölçüsüdür. Dışarı çıkan pozitif, içeri giren negatif.</li>
+</ul>
+<h3>Gauss Kanunu</h3>
+<span class="formula">Φ_E = ∮ E·dA = Q_iç / ε₀</span>
+<ul>
+<li>Kapalı bir yüzeyden geçen toplam akı, yalnızca <b>içerideki net yüke</b> bağlıdır.</li>
+<li>Akı, yüzeyin <b>şekline ve boyutuna bağlı değildir</b>; dışarıdaki yükler toplam akıya katkı vermez (alanı etkiler ama akıyı değil).</li>
+<li>Yükün içerideki <b>konumu</b> da akıyı değiştirmez.</li>
+<li>Düzgün bir alan içindeki kapalı yüzeyden geçen net akı <b>sıfırdır</b> (giren = çıkan; içeride yük yok).</li>
+</ul>
+<h3>Gauss ile bulunan klasik alanlar</h3>
+<table>
+<tr><th>Dağılım</th><th>E</th></tr>
+<tr><td>Nokta yük / dışarıdan küresel yük</td><td>kQ/r²</td></tr>
+<tr><td>Düzgün yüklü yalıtkan küre, içi (r&lt;R)</td><td>kQr/R³ (r ile doğru orantılı)</td></tr>
+<tr><td>İletken küre, içi</td><td>0</td></tr>
+<tr><td>Sonsuz çizgi yükü</td><td>λ/(2πε₀r)</td></tr>
+<tr><td>Sonsuz düzlem</td><td>σ/(2ε₀)</td></tr>
+<tr><td>İletken yüzeyi hemen dışı</td><td>σ/ε₀</td></tr>
+</table>
+<h3>Elektrostatik dengede iletkenler</h3>
+<ul>
+<li>İletkenin <b>içinde E = 0</b>.</li>
+<li>Fazla yük tamamen <b>yüzeyde</b> toplanır.</li>
+<li>Yüzeyde E yüzeye <b>dik</b>tir; iletkenin tamamı <b>eşpotansiyel</b>dir.</li>
+<li>Sivri uçlarda yük yoğunluğu ve alan daha büyüktür.</li>
+</ul>
+<div class="card tip"><b>Sınav tipi "step by step":</b> "Yarıçapı 3×10³ m olan küresel yüzey, 8.9×10² N/C düzgün alan içinde. Akıyı bulun."
+<br>1) Gauss: Φ = Q_iç/ε₀. 2) Düzgün dış alan, yüzeyin içinde yük yok → Q_iç = 0. 3) Dolayısıyla <b>Φ_net = 0</b>. Fiziksel açıklama: bir yarıdan giren çizgiler diğer yarıdan aynen çıkar. (Yarıçap ve E değeri tuzak — sonucu etkilemez.) İsterlerse ek olarak tek yarım küreden geçen akı: Φ = E·πR² = 8.9×10²·π·(3×10³)² ≈ 2.5×10¹⁰ N·m²/C.</div>
+`,
+qs:[
+{q:"A spherical Gaussian surface surrounds a point charge q. What happens to the total flux through the surface if the charge is halved?",o:["It will be increased by a factor of 2","It will be reduced by a factor of 2","It will be increased by a factor of 4","It will be decreased by a factor of 4"],a:1,e:"Φ = Q/ε₀ → yük yarıya inerse akı da yarıya iner. (Eski sınav sorusu.)"},
+{q:"Which of the following statements about the total electric flux through a closed surface according to Gauss's law is incorrect?",o:["Electric flux is proportional to the total enclosed charge","Electric flux is zero if the net enclosed charge is zero","Electric flux is outward for positive enclosed charge","Electric flux is independent of charge distribution inside the surface"],a:3,e:"Dikkat! d aslında DOĞRU bir ifadedir (akı içerideki dağılıma bağlı değildir), a, b, c de doğrudur. Bu eski sınav sorusunda 'incorrect' seçeneği soru kağıdında kesilmiş olabilir. Sınavda böyle bir soruyla karşılaşırsan: akı ∝ Q_iç/ε₀, dağılım/şekil/konum akıyı değiştirmez — bunu bil. Burada 'd'yi işaretlemeni istiyoruz çünkü en çok sorulan tuzak budur: dağılım ALANI değiştirir ama AKIYI değiştirmez."},
+{q:"A spherical surface of radius 3×10³ m is immersed in a uniform electric field of 8.9×10² N/C. The net electric flux through the sphere is:",o:["2.5×10¹⁰ N·m²/C","1.0×10¹⁰ N·m²/C","Zero","8.9×10² N·m²/C"],a:2,e:"Düzgün alan içinde kapalı yüzey → giren akı = çıkan akı → net Φ = 0 (içeride yük yok). (Eski sınavın açık uçlu sorusu.)"},
+{q:"The electric flux through a flat surface of area A placed parallel to a uniform field E is:",o:["EA","EA/2","Zero","2EA"],a:2,e:"Alan yüzeye paralel → normal ile 90° → cos90° = 0 → akı sıfır."},
+{q:"Inside a charged conductor in electrostatic equilibrium, the electric field is:",o:["Maximum at the center","Equal to kQ/r²","Zero","Uniform and nonzero"],a:2,e:"Elektrostatik dengede iletkenin içinde E = 0; yük yüzeyde toplanır."},
+{q:"A point charge q is at the center of a cube. The flux through ONE face of the cube is:",o:["q/ε₀","q/(6ε₀)","q/(4ε₀)","Zero"],a:1,e:"Toplam akı q/ε₀, simetri nedeniyle 6 yüze eşit bölünür → q/(6ε₀)."},
+{q:"A Gaussian sphere of radius R encloses a charge Q. If the radius is doubled (same charge inside), the flux:",o:["Doubles","Halves","Becomes one-fourth","Stays the same"],a:3,e:"Akı sadece içerideki yüke bağlıdır; yüzeyin boyutu önemsiz."},
+{q:"The electric field inside a uniformly charged non-conducting sphere (r < R) is:",o:["Zero","Proportional to r","Proportional to 1/r²","Constant"],a:1,e:"Gauss: E·4πr² = (Q r³/R³)/ε₀ → E = kQr/R³ ∝ r. İletken küre olsaydı içi 0 olurdu."},
+{q:"The electric field just outside the surface of a charged conductor with surface charge density σ is:",o:["σ/(2ε₀)","σ/ε₀","2σ/ε₀","Zero"],a:1,e:"İletken yüzeyi dışında E = σ/ε₀ (sonsuz yalıtkan düzlem için σ/(2ε₀) — karıştırma)."},
+{q:"Two charges +q and −q are both inside a closed surface. The net flux through the surface is:",o:["2q/ε₀","q/ε₀","Zero","−q/ε₀"],a:2,e:"Net iç yük = +q − q = 0 → akı sıfır. (Alan sıfır değildir, ama net akı sıfırdır.)"},
+{q:"According to Gauss's law, the electric field of an infinite line of charge with linear density λ varies as:",o:["1/r²","1/r","r","Constant"],a:1,e:"Silindirik Gauss yüzeyi: E·2πrL = λL/ε₀ → E = λ/(2πε₀ r) ∝ 1/r."},
+]},
+
+{id:'potential',name:'4. Elektrik Potansiyel ve Eşpotansiyel',short:'Potansiyel',
+html:`
+<h3>Potansiyel enerji ve potansiyel</h3>
+<span class="formula">ΔU = −W_alan = q·ΔV        V = U/q   (birim: Volt = J/C)        ΔV = V_B − V_A = −∫_A^B E·dl</span>
+<ul>
+<li>Elektrostatik kuvvet <b>korunumludur</b> → potansiyel enerji tanımlanabilir, iş yoldan bağımsızdır.</li>
+<li>Potansiyel <b>skalerdir</b> (yönü yok) — toplarken sadece sayıları (işaretli) toplarsın.</li>
+<li>Elektrik alan, potansiyelin <b>azaldığı</b> yönü gösterir: E = −dV/dx (gradyan).</li>
+<li><b>Pozitif yük</b> kendi başına yüksek potansiyelden alçağa gider (U azalır, alan pozitif iş yapar). <b>Negatif yük</b> tersi.</li>
+</ul>
+<h3>Nokta yük potansiyeli</h3>
+<span class="formula">V = k·q / r   (sonsuzda V = 0)        Sistem: V = Σ k q_i / r_i        İki yükün potansiyel enerjisi: U = k q₁q₂ / r</span>
+<h3>Düzgün alanda potansiyel farkı</h3>
+<span class="formula">ΔV = −E·d·cosθ        (alan yönünde d kadar: ΔV = −Ed; alana dik yolda: ΔV = 0)</span>
+<h3>Düzgün olmayan alan (integral)</h3>
+<ul>
+<li>E = 5x V/m, x: 1→3 m: ΔV = −∫₁³ 5x dx = −5·(9−1)/2 = <b>−20 V</b>.</li>
+<li>Radyal alan E = k/r² , r_A→r_B: V_A − V_B = k(1/r_A − 1/r_B). k=9×10⁹, 2→5 m: 9×10⁹·(0.5−0.2) = <b>2.7×10⁹ V</b>.</li>
+</ul>
+<h3>Eşpotansiyel yüzeyler</h3>
+<ul>
+<li>Üzerindeki her noktada V aynı. Bir yükü eşpotansiyel yüzey boyunca taşımak için <b>iş gerekmez</b> (W = qΔV = 0).</li>
+<li>Elektrik alan eşpotansiyel yüzeylere <b>her zaman diktir</b>. Alan boyunca kuvvet vardır ama yüzey boyunca kuvvet bileşeni yoktur.</li>
+<li>Yüzeyler alanın <b>kuvvetli olduğu yerde daha sıktır</b> (E = −ΔV/Δd).</li>
+<li>Düzgün alanda eşpotansiyeller düzlemdir; nokta yük için eş merkezli kürelerdir. Düzgün alanda da eşpotansiyeller <b>vardır</b>.</li>
+<li>İletkenin yüzeyi ve içi bir eşpotansiyel hacimdir.</li>
+</ul>
+<h3>İşaret yorumu</h3>
+<ul>
+<li>ΔV &gt; 0: son nokta daha yüksek potansiyelde. Pozitif yükü oraya götürmek için dış iş gerekir.</li>
+<li>ΔV &lt; 0: son nokta daha düşük potansiyelde. Pozitif yük doğal olarak oraya gider, potansiyel enerji kaybeder.</li>
+<li>ΔV = 0: iki nokta aynı potansiyelde (sonsuzda olmaları gerekmez!).</li>
+<li>ΔV'nin işareti hareket yönüne <b>bağlıdır</b> (A→B ile B→A zıt işaret).</li>
+</ul>
+<div class="card tip"><b>Sınav tipi:</b> Kenarı 1.3 m karenin köşelerinde 12, −24, 31, 17 nC. Merkezdeki potansiyel? → Merkeze uzaklık r = 1.3/√2 = 0.919 m. Toplam yük = 36 nC. V = kΣq/r = 9×10⁹·36×10⁻⁹/0.919 ≈ <b>352 V</b>. Birim V (V/m değil!).</div>
+`,
+qs:[
+{q:"If a positive charge moves from a higher potential to a lower potential, the work done by the electric field is:",o:["Zero","Positive","Negative","Infinite"],a:1,e:"Alan pozitif yükü düşük potansiyele doğru iter → alanın yaptığı iş pozitif (W = −qΔV, ΔV<0). (Eski sınav sorusu.)"},
+{q:"Which of the following statements is incorrect?",o:["The sign of ΔV is related to the work done on a charge","If ΔV>0 (positive potential difference), work must be done on a positive charge to move it","If ΔV<0, a positive charge loses potential energy as it moves naturally in the field","The sign doesn't depend on the direction of movement relative to the field"],a:3,e:"ΔV'nin işareti yöne BAĞLIDIR (A→B ile B→A zıt). Diğer üçü doğru. (Eski sınav sorusu — kağıtta C işaretlenmiş ama doğru cevap D.)"},
+{q:"Which statement about potential difference is incorrect?",o:["If ΔV>0 the potential at the final point is higher than at the initial point","If ΔV<0 the potential at the final point is lower than at the initial point","If ΔV=0 the potential at the final point or that at the initial point are at infinite","None of the above"],a:2,e:"ΔV=0 sadece iki potansiyelin EŞİT olduğunu söyler, sonsuzda olmaları gerekmez. (Eski sınav sorusu.)"},
+{q:"A uniform E of magnitude 500 N/C is directed at 90° with respect to a straight path from A to B. The distance AB is 2 m. The potential difference between A and B is:",o:["1000 V","250 V","0 V","500 V"],a:2,e:"ΔV = −E·d·cosθ, θ=90° → cos90°=0 → ΔV = 0. Alana dik hareket = eşpotansiyel. (Eski sınav sorusu.)"},
+{q:"What is the potential at the center P of a square of side 1.3 m with charges q₁=12 nC, q₂=−24 nC, q₃=31 nC, q₄=17 nC at the vertices?",o:["≈383 V/m","≈383 V","≈352 V/m","≈352 V"],a:3,e:"r = 1.3/√2 = 0.919 m. Σq = 36 nC. V = kΣq/r = 9×10⁹·36×10⁻⁹/0.919 ≈ 352 V. Birim V. (Eski sınav sorusu.)"},
+{q:"A charge moves from A to B in a non-uniform field E = 5x V/m along the x-axis from x_A = 1 m to x_B = 3 m. The potential difference V_B − V_A is:",o:["10 V","−10 V","20 V","−20 V"],a:3,e:"ΔV = −∫₁³ 5x dx = −5[x²/2]₁³ = −5(9−1)/2 = −20 V. (Eski sınav sorusu.)"},
+{q:"A radial field E = k/r² (k = 9×10⁹ V·m). A charge moves from r_A = 2 m to r_B = 5 m. The magnitude of the potential difference between A and B is:",o:["2.7×10⁹ V","2.7×10¹⁰ V","2.7×10¹¹ V","2.7×10⁸ V"],a:0,e:"|ΔV| = k(1/r_A − 1/r_B) = 9×10⁹(0.5 − 0.2) = 2.7×10⁹ V. (Eski sınav sorusu.)"},
+{q:"Which of the following statements about equipotential surfaces is incorrect?",o:["The electric field is always perpendicular to an equipotential surface","No work is required to move a charge along an equipotential surface","A charged particle experiences a force along an equipotential surface","Equipotential surfaces are closer together where the electric field is stronger"],a:2,e:"Yüzey boyunca potansiyel sabit → kuvvetin yüzey boyunca bileşeni yok. Kuvvet yüzeye DİKtir. (Eski sınav sorusu.)"},
+{q:"Which of the following statements is true about equipotential surfaces in an electric field?",o:["Equipotential surfaces are parallel to the electric field lines","Equipotential surfaces always coincide with the electric field lines","Equipotential surfaces are always perpendicular to the electric field lines","Equipotential surfaces do not exist in a uniform electric field"],a:2,e:"Alan çizgileri eşpotansiyellere diktir. Düzgün alanda eşpotansiyeller paralel düzlemler olarak VARDIR. (Eski sınav sorusu.)"},
+{q:"A positive charge is placed in a uniform electric field and allowed to move. What happens to the potential energy of the system?",o:["It remains constant because the field does no work","It decreases as the charge moves toward higher potential","It increases as the charge moves away from higher potential","It decreases as the charge moves toward the region of lower electric potential"],a:3,e:"Pozitif yük alan yönünde, düşük potansiyele doğru gider; U = qV azalır (kinetik enerjiye dönüşür). (Eski sınav sorusu.)"},
+{q:"What happens to the electric field when moving along an equipotential surface?",o:["The electric field increases","The electric field remains unchanged","The electric field decreases","No work is done by the electric field"],a:3,e:"Eşpotansiyel boyunca ΔV = 0 → W = qΔV = 0. Alanın büyüklüğü yüzey boyunca değişebilir, ama iş yapılmaz. (Eski sınav sorusu.)"},
+{q:"The electric potential at the midpoint between two equal positive charges q separated by distance 2r is:",o:["Zero","kq/r","2kq/r","kq/(2r)"],a:2,e:"Potansiyel skaler: V = kq/r + kq/r = 2kq/r. (Alan ise orada sıfırdır — ayrımı bil!)"},
+{q:"The relation between electric field and potential in one dimension is:",o:["E = dV/dx","E = −dV/dx","E = V·x","E = ∫V dx"],a:1,e:"E = −dV/dx: alan, potansiyelin en hızlı azaldığı yönü gösterir."},
+{q:"An electron is accelerated from rest through a potential difference of 100 V. Its kinetic energy becomes:",o:["100 J","100 eV = 1.6×10⁻¹⁷ J","1.6×10⁻¹⁹ J","Zero"],a:1,e:"ΔK = |q|ΔV = e·100 V = 100 eV = 100·1.6×10⁻¹⁹ = 1.6×10⁻¹⁷ J."},
+]},
+
+{id:'capacitor',name:'5. Kondansatörler ve Dielektrikler',short:'Kondansatör',
+html:`
+<h3>Sığa (capacitance)</h3>
+<span class="formula">C = Q / V        Birim: Farad (F) = C/V        Paralel plaka: C = ε₀ A / d        Dielektrikli: C = κ ε₀ A / d   (κ = ε_r)</span>
+<ul>
+<li>Sığa <b>yalnızca geometriye (A, d, şekil) ve plakalar arası malzemeye</b> bağlıdır. Yük ya da gerilime <b>bağlı değildir</b> (Q artarsa V de aynı oranda artar; oran sabit).</li>
+<li>Alan A ↑ → C ↑ (doğru orantı). Aralık d ↑ → C ↓ (ters orantı). d 2 katına çıkarsa C yarıya iner.</li>
+<li>Plakalar arası alan düzgündür: E = V/d = σ/ε₀. Dış tarafta alan ≈ 0.</li>
+</ul>
+<h3>Dielektrik</h3>
+<ul>
+<li>Dielektrik yerleştirilince sığa <b>κ kat artar</b>.</li>
+<li>Dielektrik <b>kutuplanır</b>; plakalar arasındaki alanı <b>azaltır</b> (E = E₀/κ) — "elektrik alanı artırır" ifadesi <b>yanlıştır</b>.</li>
+<li>Avantajları: (1) sığayı artırır, (2) plakaları mekanik olarak ayrı tutar, (3) daha yüksek gerilime dayanır (dielektrik dayanımı, boşalma olmadan), (4) verilen gerilimde daha çok yük depolar.</li>
+<li>İşlevi: sığayı artırmak ve yük kaçağını önlemek (yalıtkan).</li>
+</ul>
+<h3>Pil bağlı mı, bağlı değil mi? (EN ÇOK ÇIKAN TUZAK)</h3>
+<table>
+<tr><th>Durum</th><th>Sabit kalan</th><th>d ikiye katlanırsa (C yarıya iner)</th><th>Dielektrik konursa (C κ kat artar)</th></tr>
+<tr><td><b>Pil bağlı</b></td><td>V</td><td>Q = CV yarıya iner, E = V/d yarıya iner, U = ½CV² yarıya iner</td><td>Q κ kat artar, U κ kat artar, E aynı (V/d)</td></tr>
+<tr><td><b>Pil çıkarılmış</b></td><td>Q</td><td>V = Q/C 2 kat artar, E = σ/ε₀ aynı, U = Q²/2C 2 kat artar</td><td>V κ kat azalır, E κ kat azalır, U κ kat azalır</td></tr>
+</table>
+<h3>Enerji</h3>
+<span class="formula">U = ½ Q V = ½ C V² = Q² / (2C)        Enerji yoğunluğu: u = ½ ε₀ E²  (J/m³)</span>
+<h3>Bağlantılar</h3>
+<span class="formula">Paralel: C_eş = C₁ + C₂ + …   (aynı V, yükler toplanır)        Seri: 1/C_eş = 1/C₁ + 1/C₂ + …   (aynı Q, gerilimler toplanır)</span>
+<ul><li>Paralel bağlamak sığayı artırır; seri bağlamak en küçük sığadan da küçük yapar.</li></ul>
+<div class="card tip"><b>Sınav tipi:</b> A = 50 cm² = 50×10⁻⁴ m², d = 2 cm = 0.02 m, hava, Q = 2.21×10⁻⁹ C. V = ? → C = ε₀A/d = 8.85×10⁻¹²·50×10⁻⁴/0.02 = 2.21×10⁻¹² F. V = Q/C = 2.21×10⁻⁹/2.21×10⁻¹² ≈ <b>1000 V (~999 V)</b>. <b>Birimleri SI'ya çevirmeyi unutma!</b></div>
+`,
+qs:[
+{q:"The capacitance of a capacitor depends on:",o:["The charge stored only","The voltage applied only","The physical dimensions and dielectric material","All of the above"],a:2,e:"C sadece geometri + dielektrik malzemeye bağlı. Q ve V'ye bağlı DEĞİL (Q/V oranı sabittir). Eski kağıtta 'd' işaretlenmiş — yanlış! (Eski sınav sorusu.)"},
+{q:"The unit of capacitance is:",o:["Ohm","Farad","Coulomb","Henry"],a:1,e:"Farad = Coulomb/Volt. Henry indüktans birimi, Ohm direnç birimi. (Eski sınav sorusu.)"},
+{q:"When a dielectric is inserted into a capacitor, its capacitance:",o:["Increases","Decreases","Remains the same","Becomes zero"],a:0,e:"C = κC₀, κ > 1 → artar. (Eski sınav sorusu.)"},
+{q:"The capacitance of a parallel plate capacitor is directly proportional to:",o:["The separation between the plates","The area of the plates","The voltage applied","The charge stored"],a:1,e:"C = ε₀A/d → alanla doğru, aralıkla ters orantılı. (Eski sınav sorusu.)"},
+{q:"What happens to the capacitance of a capacitor if the plate separation is doubled while keeping the area constant?",o:["It doubles","It halves","It remains the same","It becomes zero"],a:1,e:"C ∝ 1/d → d 2 kat → C yarı. (Eski sınav sorusu.)"},
+{q:"The function of a dielectric in a capacitor is to:",o:["Reduce capacitance","Allow charge to flow freely","Increase capacitance and prevent charge leakage","Convert electrical energy to mechanical energy"],a:2,e:"Dielektrik yalıtkandır: sığayı artırır, yük kaçağını önler. (Eski sınav sorusu.)"},
+{q:"A capacitor is connected to a battery and fully charged. If the plate separation is doubled while keeping the battery connected, what happens to the charge stored?",o:["Doubles","Halves","Remains the same","Becomes zero"],a:1,e:"Pil bağlı → V sabit. C yarıya iner → Q = CV yarıya iner. (Eski sınav sorusu.)"},
+{q:"The plates of a capacitor have surface 50 cm², are 2 cm apart with air between them. The capacitor carries Q = 2.21×10⁻⁹ C. The potential difference between the plates is approximately:",o:["~777 V","~888 V","~999 V","~1111 V"],a:2,e:"C = ε₀A/d = 8.85×10⁻¹²·(50×10⁻⁴)/0.02 = 2.21×10⁻¹² F → V = Q/C ≈ 1000 V. (Eski sınav sorusu.)"},
+{q:"Which one of the following statements is incorrect about a dielectric inserted into a capacitor?",o:["It increases the capacitance","It increases the electric field","It holds the plates","It increases the capacitance by increasing the charge stored for a given voltage"],a:1,e:"Dielektrik, plakalar arasındaki alanı AZALTIR (E = E₀/κ). (Eski sınav sorusu.)"},
+{q:"A charged capacitor is disconnected from the battery and then a dielectric (κ = 3) is inserted. The voltage across the plates:",o:["Triples","Becomes one-third","Stays the same","Becomes zero"],a:1,e:"Pil yok → Q sabit. C 3 kat artar → V = Q/C üçte bire iner."},
+{q:"Two capacitors of 2 μF and 4 μF are connected in series. The equivalent capacitance is:",o:["6 μF","8 μF","1.33 μF","0.75 μF"],a:2,e:"1/C = 1/2 + 1/4 = 3/4 → C = 4/3 ≈ 1.33 μF. Seri eşdeğer en küçükten de küçüktür."},
+{q:"Two capacitors of 2 μF and 4 μF are connected in parallel. The equivalent capacitance is:",o:["6 μF","1.33 μF","8 μF","2 μF"],a:0,e:"Paralel: C = C₁ + C₂ = 6 μF."},
+{q:"The energy stored in a capacitor with capacitance C and voltage V is:",o:["CV","½CV²","CV²","½QV²"],a:1,e:"U = ½CV² = ½QV = Q²/(2C)."},
+{q:"A capacitor stores charge Q at voltage V. If the voltage is doubled, the stored energy:",o:["Doubles","Quadruples","Halves","Stays the same"],a:1,e:"U = ½CV² ∝ V² → 2² = 4 kat."},
+{q:"The electric field between the plates of a parallel-plate capacitor (air) with plate charge density σ is:",o:["σ/(2ε₀)","σ/ε₀","2σ/ε₀","Zero"],a:1,e:"İki plakanın alanları (σ/2ε₀ her biri) arada aynı yönde toplanır → σ/ε₀. Dışarıda birbirini götürür → 0."},
+{q:"A capacitor remains connected to a battery while a dielectric is inserted. Which quantity stays constant?",o:["Charge Q","Voltage V","Capacitance C","Stored energy U"],a:1,e:"Pil bağlıyken V sabittir; Q, C, U hepsi κ kat artar."},
+]},
+
+{id:'current',name:'6. Akım, Direnç ve DC Devreler',short:'Devreler',
+html:`
+<h3>Akım</h3>
+<span class="formula">I = dQ/dt   (Amper = C/s)        I = n q v_d A   (n: taşıyıcı yoğunluğu, v_d: sürüklenme hızı)        J = I/A (akım yoğunluğu)</span>
+<ul><li>Geleneksel akım yönü <b>pozitif yük</b> yönü (yüksek → düşük potansiyel); elektronlar ters yönde hareket eder.</li></ul>
+<h3>Direnç ve Ohm Kanunu</h3>
+<span class="formula">V = I R        R = ρ L / A   (ρ: özdirenç, Ω·m)        ρ(T) = ρ₀[1 + α(T − T₀)]        Güç: P = VI = I²R = V²/R</span>
+<ul>
+<li>Direnç uzunlukla doğru, kesit alanıyla ters orantılı. Telin uzunluğu 2 katına çıkıp kesiti yarıya inerse R <b>4 kat</b> olur.</li>
+<li>Metallerde sıcaklık artınca direnç artar (α &gt; 0); yarı iletkenlerde azalır.</li>
+<li>Ohmik malzeme: V–I grafiği doğrusal. Diyot, ampul teli (ısınınca) ohmik değildir.</li>
+</ul>
+<h3>EMK ve iç direnç</h3>
+<span class="formula">V_uç = ε − I r        I = ε / (R + r)</span>
+<h3>Bağlantılar</h3>
+<span class="formula">Seri: R_eş = R₁ + R₂ + …   (aynı I)        Paralel: 1/R_eş = 1/R₁ + 1/R₂ + …   (aynı V)</span>
+<ul><li>Kondansatörlerin tersi! Dirençler seri bağlanınca büyür, paralel bağlanınca küçülür.</li></ul>
+<h3>Kirchhoff kuralları</h3>
+<ul>
+<li><b>Düğüm (junction) kuralı</b>: bir düğüme giren akımlar = çıkan akımlar (yük korunumu).</li>
+<li><b>Çevrim (loop) kuralı</b>: kapalı bir çevrim boyunca potansiyel değişimlerinin toplamı sıfır (enerji korunumu). Direnci akım yönünde geçince −IR, pilin −'sinden +'sına geçince +ε.</li>
+</ul>
+<h3>RC devreleri</h3>
+<span class="formula">Zaman sabiti: τ = RC        Dolma: q(t) = Q_max(1 − e^{−t/RC}),  I(t) = (ε/R)e^{−t/RC}        Boşalma: q(t) = Q₀ e^{−t/RC}</span>
+<ul>
+<li>t = 0: kondansatör boşken kısa devre gibi (akım maksimum ε/R). t → ∞: dolunca açık devre gibi (akım sıfır).</li>
+<li>t = τ'da yük maksimumun %63'üne ulaşır; boşalmada %37'ye düşer.</li>
+</ul>
+`,
+qs:[
+{q:"The SI unit of electric current is:",o:["Coulomb","Volt","Ampere","Ohm"],a:2,e:"Amper = Coulomb/saniye."},
+{q:"A wire's length is doubled and its cross-sectional area is halved. Its resistance becomes:",o:["Unchanged","2 times","4 times","Half"],a:2,e:"R = ρL/A → (2L)/(A/2) = 4 kat."},
+{q:"Three resistors of 6 Ω each are connected in parallel. The equivalent resistance is:",o:["18 Ω","6 Ω","2 Ω","0.5 Ω"],a:2,e:"Eşit n direnç paralel: R/n = 6/3 = 2 Ω."},
+{q:"According to Kirchhoff's junction rule:",o:["The sum of voltages around a loop is zero","The current entering a junction equals the current leaving it","Resistance is conserved","Power is the same in every branch"],a:1,e:"Düğüm kuralı = yük korunumu. Çevrim kuralı = enerji korunumu."},
+{q:"A 12 V battery with internal resistance 1 Ω is connected to a 5 Ω resistor. The current is:",o:["2.4 A","2 A","12 A","0.5 A"],a:1,e:"I = ε/(R + r) = 12/(5+1) = 2 A. Uç gerilimi = 12 − 2·1 = 10 V."},
+{q:"The power dissipated in a resistor R carrying current I is:",o:["IR","I²R","I/R","IR²"],a:1,e:"P = VI = I²R = V²/R."},
+{q:"In an RC charging circuit, immediately after the switch is closed (t = 0) the current is:",o:["Zero","Maximum, equal to ε/R","Equal to ε/(2R)","Infinite"],a:1,e:"Boş kondansatör başlangıçta kısa devre gibi davranır → I₀ = ε/R. Zamanla sıfıra düşer."},
+{q:"The time constant of an RC circuit with R = 2 kΩ and C = 500 μF is:",o:["1 s","0.1 s","10 s","1 ms"],a:0,e:"τ = RC = 2000 · 500×10⁻⁶ = 1 s."},
+{q:"For most metals, when temperature increases the resistivity:",o:["Decreases","Increases","Stays constant","Becomes zero"],a:1,e:"ρ = ρ₀[1 + α(T−T₀)], metallerde α > 0."},
+{q:"Two resistors 3 Ω and 6 Ω are connected in series to a 9 V battery. The current in the circuit is:",o:["3 A","1 A","0.5 A","4.5 A"],a:1,e:"R_eş = 9 Ω → I = 9/9 = 1 A."},
+{q:"The drift velocity of electrons in a conductor is related to current by:",o:["I = nqv_d A","I = qv_d/A","I = nA/(qv_d)","I = v_d/(nqA)"],a:0,e:"I = n q v_d A. Sürüklenme hızı tipik olarak çok küçüktür (mm/s mertebesi)."},
+{q:"Which statement about conventional current is correct?",o:["It flows from lower to higher potential outside the battery","It is the direction positive charges would move","It is the direction electrons move","It has no defined direction"],a:1,e:"Geleneksel akım pozitif yükün hareket yönü (dış devrede + → −). Elektronlar ters yönde gider."},
+]},
+
+{id:'magnet',name:'7. Manyetik Alan ve Kuvvetler',short:'Manyetizma',
+html:`
+<h3>Manyetik kuvvet</h3>
+<span class="formula">F = q v × B   →  |F| = |q| v B sinθ        (birim B: Tesla, 1 T = 1 N/(A·m);  1 G = 10⁻⁴ T)        Tel üzerine: F = I L × B  →  |F| = I L B sinθ</span>
+<ul>
+<li>Kuvvet hem <b>v'ye hem B'ye dik</b>tir (sağ el kuralı; negatif yük için ters çevir).</li>
+<li>Manyetik kuvvet <b>iş yapmaz</b>, hızın büyüklüğünü değiştirmez, sadece yönünü değiştirir (kinetik enerji sabit).</li>
+<li>v ∥ B ise kuvvet sıfır; v ⊥ B ise maksimum.</li>
+<li>Manyetik alan çizgileri <b>kapalı döngüler</b>dir (N'den çıkıp S'ye girer); manyetik tek kutup yoktur → ∮B·dA = 0 (manyetizma için Gauss).</li>
+</ul>
+<h3>Düzgün alanda dairesel hareket</h3>
+<span class="formula">qvB = mv²/r  →  r = mv/(qB)        T = 2πm/(qB)   (hızdan bağımsız!)        f = qB/(2πm) (siklotron frekansı)</span>
+<h3>Lorentz kuvveti ve hız seçici</h3>
+<span class="formula">F = q(E + v × B)        Hız seçici: qE = qvB → v = E/B</span>
+<h3>Akım döngüsüne tork</h3>
+<span class="formula">μ = N I A   (manyetik dipol moment)        τ = μ × B → |τ| = NIAB sinθ        U = −μ·B</span>
+<h3>Biot–Savart ve Ampère</h3>
+<span class="formula">dB = (μ₀/4π) I dl × r̂ / r²        μ₀ = 4π×10⁻⁷ T·m/A        Ampère: ∮ B·dl = μ₀ I_iç</span>
+<table>
+<tr><th>Kaynak</th><th>B</th></tr>
+<tr><td>Sonsuz düz tel (r uzakta)</td><td>μ₀I/(2πr)</td></tr>
+<tr><td>Dairesel halkanın merkezi (N sarım)</td><td>μ₀NI/(2R)</td></tr>
+<tr><td>Uzun solenoid (içi)</td><td>μ₀ n I  (n = sarım/uzunluk), dışı ≈ 0</td></tr>
+<tr><td>Toroid</td><td>μ₀NI/(2πr)</td></tr>
+</table>
+<h3>Paralel iki tel</h3>
+<span class="formula">F/L = μ₀ I₁ I₂ / (2πd)        Aynı yönlü akımlar ÇEKER, zıt yönlü akımlar İTER</span>
+<div class="card warn"><b>Sık hatalar</b><ul><li>Elektrik kuvveti E yönünde; manyetik kuvvet B'ye DİK. Durgun yüke manyetik kuvvet etkimez.</li><li>Dairesel hareket periyodu hıza bağlı değil; yarıçap hıza bağlı.</li></ul></div>
+`,
+qs:[
+{q:"The magnetic force on a charged particle moving parallel to the magnetic field is:",o:["Maximum","Zero","qvB","Perpendicular to v"],a:1,e:"F = qvB sinθ, θ = 0 → F = 0."},
+{q:"The SI unit of magnetic field is:",o:["Weber","Tesla","Henry","Gauss"],a:1,e:"Tesla (T) = N/(A·m). Weber manyetik akı, Henry indüktans birimidir; Gauss SI değil (1 G = 10⁻⁴ T)."},
+{q:"A charged particle moves in a circle in a uniform magnetic field. The radius of the circle is:",o:["r = qB/(mv)","r = mv/(qB)","r = mvB/q","r = qvB/m"],a:1,e:"qvB = mv²/r → r = mv/(qB)."},
+{q:"The period of a charged particle's circular motion in a uniform magnetic field depends on:",o:["Its speed","Its radius","Only on q, m and B","Its kinetic energy"],a:2,e:"T = 2πm/(qB) — hızdan ve yarıçaptan bağımsız."},
+{q:"The work done by a magnetic force on a moving charged particle is:",o:["Always positive","Always negative","Zero","Equal to qvB·d"],a:2,e:"Manyetik kuvvet hıza dik → iş yapmaz, kinetik enerji değişmez."},
+{q:"The magnetic field at distance r from a long straight wire carrying current I is:",o:["μ₀I/(2πr)","μ₀I/(4πr²)","μ₀I/(2r)","μ₀Ir"],a:0,e:"Ampère kanunu: B·2πr = μ₀I → B = μ₀I/(2πr)."},
+{q:"Two long parallel wires carry currents in the same direction. The wires:",o:["Repel each other","Attract each other","Experience no force","Rotate"],a:1,e:"Aynı yönlü akımlar çeker, zıt yönlü iter."},
+{q:"The magnetic field inside a long solenoid with n turns per unit length carrying current I is:",o:["μ₀nI, uniform","μ₀nI/r","Zero","μ₀I/(2πr)"],a:0,e:"B = μ₀nI, içeride düzgün; dışarıda yaklaşık sıfır."},
+{q:"In a velocity selector with crossed E and B fields, particles pass undeflected when:",o:["v = EB","v = B/E","v = E/B","v = qE/B"],a:2,e:"qE = qvB → v = E/B."},
+{q:"The net magnetic flux through any closed surface is:",o:["μ₀I","Q/ε₀","Zero","Infinite"],a:2,e:"Manyetik tek kutup yok → ∮B·dA = 0 (Maxwell'in 2. denklemi)."},
+{q:"A current loop with magnetic moment μ in a uniform magnetic field B experiences:",o:["A net force only","A torque τ = μ×B","Neither force nor torque","A force along B"],a:1,e:"Düzgün alanda döngüye net kuvvet sıfır, tork τ = μB sinθ."},
+{q:"A proton moving at 10⁶ m/s perpendicular to a 0.5 T field experiences a force of magnitude (e = 1.6×10⁻¹⁹ C):",o:["8×10⁻¹⁴ N","1.6×10⁻¹³ N","3.2×10⁻¹⁴ N","Zero"],a:0,e:"F = qvB = 1.6×10⁻¹⁹ · 10⁶ · 0.5 = 8×10⁻¹⁴ N."},
+]},
+
+{id:'induction',name:'8. Elektromanyetik İndüksiyon',short:'İndüksiyon',
+html:`
+<h3>Manyetik akı</h3>
+<span class="formula">Φ_B = B·A·cosθ   (birim: Weber, Wb = T·m²)</span>
+<h3>Faraday Kanunu</h3>
+<span class="formula">ε = −N dΦ_B/dt</span>
+<ul>
+<li>Akı DEĞİŞİRSE emk indüklenir. Akıyı değiştirmenin 3 yolu: B değişir, A değişir, θ (yönelim) değişir.</li>
+<li>Sabit akı → emk yok (büyük bir B olsa bile!).</li>
+</ul>
+<h3>Lenz Kanunu</h3>
+<ul>
+<li>İndüklenen akım, <b>kendisini oluşturan akı değişimine karşı koyacak</b> yönde akar (enerji korunumu).</li>
+<li>Mıknatıs halkaya yaklaşırken halka onu iter; uzaklaşırken çeker.</li>
+</ul>
+<h3>Hareket emk'sı</h3>
+<span class="formula">ε = B L v   (L uzunluğunda çubuk, B'ye dik v hızıyla)</span>
+<h3>Öz indüktans ve RL devreleri</h3>
+<span class="formula">ε_L = −L dI/dt        L = NΦ_B/I   (Henry)        Solenoid: L = μ₀ n² A l        U_L = ½ L I²        Enerji yoğunluğu: u = B²/(2μ₀)</span>
+<span class="formula">RL: τ = L/R        I(t) = (ε/R)(1 − e^{−t/τ})</span>
+<ul><li>Bobin akımdaki ani değişime karşı koyar: t=0'da açık devre gibi (I=0), uzun sürede kısa devre gibi (I=ε/R). Kondansatörün tam tersi!</li></ul>
+<h3>Karşılıklı indüktans, transformatör</h3>
+<span class="formula">V_s / V_p = N_s / N_p        I_s / I_p = N_p / N_s   (ideal)</span>
+<h3>LC salınımları</h3>
+<span class="formula">ω = 1/√(LC)        f = 1/(2π√(LC))        Enerji C ↔ L arasında gidip gelir</span>
+<h3>Jeneratör (AC)</h3>
+<span class="formula">ε(t) = N B A ω sin(ωt)   →   ε_max = NBAω</span>
+`,
+qs:[
+{q:"According to Faraday's law, an emf is induced in a loop when:",o:["The magnetic field is strong","The magnetic flux through the loop changes","The loop carries a current","The loop is at rest in a uniform field"],a:1,e:"ε = −dΦ/dt: akı DEĞİŞİMİ gerekir."},
+{q:"Lenz's law states that the induced current:",o:["Flows in the direction of the changing flux","Opposes the change in flux that produces it","Is always clockwise","Is independent of the flux change"],a:1,e:"İndüklenen akım değişime karşı koyar — enerji korunumunun sonucu."},
+{q:"A rod of length 0.5 m moves at 4 m/s perpendicular to a 0.2 T field. The motional emf is:",o:["0.1 V","0.4 V","2.5 V","4 V"],a:1,e:"ε = BLv = 0.2·0.5·4 = 0.4 V."},
+{q:"The SI unit of magnetic flux is:",o:["Tesla","Weber","Henry","Ampere"],a:1,e:"Weber = T·m²."},
+{q:"The SI unit of inductance is:",o:["Farad","Tesla","Henry","Weber"],a:2,e:"Henry (H) = V·s/A."},
+{q:"A bar magnet is moved toward a conducting loop. The induced current creates a magnetic field that:",o:["Attracts the magnet","Repels the magnet","Has no effect on the magnet","Is parallel to the loop plane"],a:1,e:"Lenz: yaklaşan mıknatısı iter (akı artışına karşı koyar)."},
+{q:"The energy stored in an inductor L carrying current I is:",o:["LI","½LI²","LI²","½L²I"],a:1,e:"U = ½LI² (kondansatördeki ½CV²'nin benzeri)."},
+{q:"In an RL circuit immediately after the switch is closed, the current is:",o:["ε/R","Zero","Infinite","ε/(2R)"],a:1,e:"Bobin ani akım değişimine karşı koyar → I(0) = 0, sonra ε/R'ye doğru artar. Kondansatörün tersi."},
+{q:"A transformer has 100 primary turns and 1000 secondary turns. With 12 V at the primary, the secondary voltage is:",o:["1.2 V","12 V","120 V","1200 V"],a:2,e:"V_s = V_p·N_s/N_p = 12·10 = 120 V (yükseltici)."},
+{q:"The angular frequency of an LC circuit is:",o:["ω = √(LC)","ω = 1/√(LC)","ω = L/C","ω = 1/(LC)"],a:1,e:"ω = 1/√(LC)."},
+{q:"A loop of area 0.1 m² is in a field that changes from 0 to 2 T in 0.5 s. The magnitude of the induced emf (one turn) is:",o:["0.1 V","0.2 V","0.4 V","4 V"],a:2,e:"ε = ΔΦ/Δt = (2·0.1)/0.5 = 0.4 V."},
+{q:"The time constant of an RL circuit is:",o:["RL","R/L","L/R","1/(RL)"],a:2,e:"τ = L/R (RC devresinde τ = RC idi)."},
+]},
+
+{id:'maxwell',name:'9. Maxwell Denklemleri ve EM Dalgalar',short:'EM Dalga',
+html:`
+<h3>Maxwell denklemleri (integral form)</h3>
+<table>
+<tr><th>Denklem</th><th>Anlamı</th></tr>
+<tr><td>∮E·dA = Q_iç/ε₀</td><td>Gauss (elektrik): yükler E alanı yaratır</td></tr>
+<tr><td>∮B·dA = 0</td><td>Gauss (manyetik): manyetik tek kutup yok</td></tr>
+<tr><td>∮E·dl = −dΦ_B/dt</td><td>Faraday: değişen B, E yaratır</td></tr>
+<tr><td>∮B·dl = μ₀I + μ₀ε₀ dΦ_E/dt</td><td>Ampère–Maxwell: akım VE değişen E, B yaratır</td></tr>
+</table>
+<ul>
+<li>Maxwell'in eklediği terim: <b>yer değiştirme akımı</b> I_d = ε₀ dΦ_E/dt (örn. dolan kondansatörün plakaları arasında).</li>
+</ul>
+<h3>Elektromanyetik dalgalar</h3>
+<span class="formula">c = 1/√(μ₀ε₀) = 3×10⁸ m/s        c = λ f        E = c B   (E ve B fazda, birbirine ve yayılma yönüne dik — enine dalga)</span>
+<ul>
+<li>EM dalga ortam gerektirmez (boşlukta yayılır). Ortamda hız v = c/n.</li>
+<li>Yayılma yönü E × B yönündedir.</li>
+<li>Spektrum (frekans artan sırada): radyo → mikrodalga → kızılötesi → görünür → morötesi → X → gama.</li>
+</ul>
+<h3>Enerji ve şiddet</h3>
+<span class="formula">Poynting vektörü: S = (1/μ₀) E × B        Şiddet: I = S_ort = E_max B_max/(2μ₀) = E_max²/(2μ₀c) = ½ ε₀ c E_max²        Işınım basıncı: P = I/c (soğurma), 2I/c (yansıma)</span>
+<h3>Kısa: atom yapısı (eski sınavda çıktı)</h3>
+<ul>
+<li><b>Atom numarası Z</b> = proton sayısı. <b>Kütle numarası A</b> = proton + nötron sayısı. Nötr atomda elektron = proton.</li>
+<li>İzotop: aynı Z, farklı A (nötron sayısı farklı).</li>
+</ul>
+`,
+qs:[
+{q:"What is the mass number?",o:["It is the number of electrons","It is the number of protons and neutrons","It is the number of protons","It is the number of neutrons"],a:1,e:"Kütle numarası A = proton + nötron. Atom numarası Z = proton. (Eski sınav sorusu.)"},
+{q:"The speed of electromagnetic waves in vacuum is given by:",o:["c = √(μ₀ε₀)","c = 1/√(μ₀ε₀)","c = μ₀/ε₀","c = μ₀ε₀"],a:1,e:"c = 1/√(μ₀ε₀) ≈ 3×10⁸ m/s."},
+{q:"In an electromagnetic wave, the electric and magnetic fields are:",o:["Parallel to each other","Perpendicular to each other and to the direction of propagation","Parallel to the direction of propagation","Out of phase by 90°"],a:1,e:"Enine dalga: E ⊥ B ⊥ yayılma yönü; E ve B aynı fazda."},
+{q:"Maxwell's addition to Ampère's law is the term:",o:["μ₀I","−dΦ_B/dt","μ₀ε₀ dΦ_E/dt","Q/ε₀"],a:2,e:"Yer değiştirme akımı: değişen elektrik akısı da manyetik alan yaratır."},
+{q:"Which Maxwell equation expresses the absence of magnetic monopoles?",o:["∮E·dA = Q/ε₀","∮B·dA = 0","∮E·dl = −dΦ_B/dt","∮B·dl = μ₀I"],a:1,e:"Manyetik Gauss kanunu: kapalı yüzeyden net manyetik akı sıfır."},
+{q:"The ratio of E to B amplitudes in an EM wave in vacuum is:",o:["E/B = c","E/B = 1/c","E/B = μ₀","E/B = ε₀"],a:0,e:"E = cB."},
+{q:"An EM wave has a frequency of 100 MHz. Its wavelength in vacuum is:",o:["0.3 m","3 m","30 m","3×10¹⁶ m"],a:1,e:"λ = c/f = 3×10⁸/10⁸ = 3 m."},
+{q:"The Poynting vector S = (E×B)/μ₀ represents:",o:["The charge density","The energy flow per unit area per unit time","The wave's phase","The magnetic flux"],a:1,e:"Birim alandan birim zamanda geçen enerji (W/m²); yönü yayılma yönü."},
+{q:"Which of the following has the highest frequency?",o:["Radio waves","Infrared","Visible light","X-rays"],a:3,e:"Radyo < mikrodalga < IR < görünür < UV < X < gama."},
+{q:"Faraday's law in Maxwell's equations states that a changing magnetic flux produces:",o:["A magnetic monopole","An electric field with closed loops","A static charge","Nothing"],a:1,e:"∮E·dl = −dΦ_B/dt: değişen B, dolanan (circulating) E alanı üretir."},
+]},
+];
+
+/* ===================== FORMÜL KARTI ===================== */
+const CHEAT = `
+<h3>Sabitler</h3>
+<span class="formula">k = 9×10⁹ N·m²/C²   ε₀ = 8.85×10⁻¹² C²/N·m²   μ₀ = 4π×10⁻⁷ T·m/A   e = 1.6×10⁻¹⁹ C   m_e = 9.11×10⁻³¹ kg   m_p = 1.67×10⁻²⁷ kg   c = 3×10⁸ m/s</span>
+<h3>Elektrostatik</h3>
+<span class="formula">F = k q₁q₂/(ε_r r²)     E = F/q = kq/r²     F = qE     a = qE/m
+Φ_E = ∮E·dA = Q_iç/ε₀     E_çizgi = λ/(2πε₀r)     E_düzlem = σ/(2ε₀)     E_iletken yüzey = σ/ε₀
+V = kq/r     ΔV = −∫E·dl     düzgün: ΔV = −Ed     E = −dV/dx     U = qV     U₁₂ = kq₁q₂/r     W_alan = −qΔV
+Dipol: p = qd,  τ = pE sinθ,  U = −pE cosθ,  E_uzak ∝ 1/r³</span>
+<h3>Kondansatör</h3>
+<span class="formula">C = Q/V     C = κε₀A/d     E = V/d = σ/ε₀     U = ½CV² = ½QV = Q²/2C     u = ½ε₀E²
+Paralel: C = ΣC     Seri: 1/C = Σ1/C     Pil bağlı → V sabit     Pil yok → Q sabit     Dielektrik: C↑κ, E↓κ (Q sabitse)</span>
+<h3>Akım & Devre</h3>
+<span class="formula">I = Q/t = nqv_dA     V = IR     R = ρL/A     P = VI = I²R = V²/R     V_uç = ε − Ir
+Seri: R = ΣR     Paralel: 1/R = Σ1/R     RC: τ = RC, q = Q(1−e^{−t/τ}), q = Q₀e^{−t/τ}</span>
+<h3>Manyetizma</h3>
+<span class="formula">F = qvB sinθ     F = ILB sinθ     r = mv/(qB)     T = 2πm/(qB)     v_seçici = E/B     τ = NIAB sinθ
+B_tel = μ₀I/(2πr)     B_halka = μ₀NI/(2R)     B_solenoid = μ₀nI     F/L = μ₀I₁I₂/(2πd)     ∮B·dl = μ₀I     ∮B·dA = 0</span>
+<h3>İndüksiyon</h3>
+<span class="formula">Φ_B = BA cosθ     ε = −N dΦ_B/dt     ε = BLv     ε_L = −L dI/dt     U = ½LI²     u = B²/2μ₀
+RL: τ = L/R     LC: ω = 1/√(LC)     V_s/V_p = N_s/N_p     ε_max = NBAω</span>
+<h3>EM dalga</h3>
+<span class="formula">c = 1/√(μ₀ε₀) = λf     E = cB     S = E×B/μ₀     I = E_max²/(2μ₀c)     P_ışınım = I/c (soğ.) , 2I/c (yans.)</span>
+<h3>Birim dönüşümleri (sınavda en çok hata buradan!)</h3>
+<span class="formula">1 cm² = 10⁻⁴ m²     1 cm = 10⁻² m     1 μC = 10⁻⁶ C     1 nC = 10⁻⁹ C     1 pF = 10⁻¹² F     1 μF = 10⁻⁶ F     1 G = 10⁻⁴ T     1 eV = 1.6×10⁻¹⁹ J</span>
+`;
+
+/* ===================== STATE ===================== */
+let state = {done:{}, wrong:[]};
+try{ const s = localStorage.getItem('phys2_state'); if(s) state = Object.assign(state, JSON.parse(s)); }catch(e){}
+function save(){ try{ localStorage.setItem('phys2_state', JSON.stringify(state)); }catch(e){} }
+function qid(t,i){ return t+'#'+i; }
+
+function topicStats(t){
+  const total = t.qs.length; let correct = 0, answered = 0;
+  t.qs.forEach((_,i)=>{ const r = state.done[qid(t.id,i)]; if(r!==undefined){answered++; if(r) correct++;} });
+  return {total, correct, answered};
+}
+
+/* ===================== NAV ===================== */
+let view = {page:'home'};
+function renderNav(){
+  const n = document.getElementById('nav');
+  let h = `<h1>⚡ Physics <span>2</span> Hazırlık</h1>`;
+  h += `<div class="grp">Genel</div>`;
+  h += navBtn('home','🏠 Ana sayfa');
+  h += navBtn('cheat','📋 Formül kartı');
+  h += navBtn('strategy','🎯 Sınav stratejisi');
+  h += `<div class="grp">Konular</div>`;
+  TOPICS.forEach(t=>{ const s=topicStats(t); const pct = s.answered? Math.round(100*s.correct/s.total):0;
+    h += navBtn('topic:'+t.id, t.name, s.answered? pct+'%':''); });
+  h += `<div class="grp">Testler</div>`;
+  h += navBtn('general','🎲 Genel karışık test');
+  h += navBtn('exam','⏱ Sınav simülasyonu');
+  h += navBtn('wrong','❌ Yanlışlarım');
+  h += navBtn('progress','📊 İlerleme');
+  n.innerHTML = h;
+}
+function navBtn(key,label,pct){
+  const act = (view.page===key)?'active':'';
+  return `<button class="${act}" onclick="go('${key}')">${label}${pct?`<span class="pct">${pct}</span>`:''}</button>`;
+}
+function go(key){
+  document.querySelector('nav').classList.remove('open');
+  if(key.startsWith('topic:')) view={page:key, topic:key.slice(6)};
+  else view={page:key};
+  render(); window.scrollTo(0,0);
+}
+
+/* ===================== RENDER ===================== */
+function render(){
+  renderNav();
+  const m = document.getElementById('main');
+  const p = view.page;
+  if(p==='home') m.innerHTML = homeHTML();
+  else if(p==='cheat') m.innerHTML = `<h2>Formül kartı</h2><p class="sub">Sınavdan önce son tekrar için. Hepsini bir kağıda kendi elinle yaz — en iyi ezber yöntemi.</p>${CHEAT}`;
+  else if(p==='strategy') m.innerHTML = strategyHTML();
+  else if(p.startsWith('topic:')) m.innerHTML = topicHTML(TOPICS.find(t=>t.id===view.topic));
+  else if(p==='general') m.innerHTML = quizSetup('general');
+  else if(p==='exam') m.innerHTML = quizSetup('exam');
+  else if(p==='wrong') m.innerHTML = wrongHTML();
+  else if(p==='progress') m.innerHTML = progressHTML();
+  else if(p==='quiz') renderQuiz();
+}
+
+function homeHTML(){
+  let total=0, answered=0, correct=0;
+  TOPICS.forEach(t=>{const s=topicStats(t); total+=s.total; answered+=s.answered; correct+=s.correct;});
+  let h = `<h2>Physics 2 – Sınav Hazırlık</h2><p class="sub">Elektrik ve manyetizma. Sorular sınavla aynı formatta <b>İngilizce</b>, konu anlatımları ve çözümler <b>Türkçe</b>. Toplam ${total} soru, 9 konu.</p>`;
+  h += `<div class="card key"><b>Nasıl çalışmalısın?</b><ol>
+  <li>Her konuyu sırayla oku (10–15 dk), sonra o konunun testini çöz. Yanlışların açıklamasını mutlaka oku.</li>
+  <li>Tüm konular bitince <b>Genel karışık test</b>'i 2–3 kere çöz.</li>
+  <li>Sınavdan bir gün önce <b>Sınav simülasyonu</b> (20 soru, süreli) + <b>Yanlışlarım</b> bölümünü tekrar et.</li>
+  <li>Sınav sabahı sadece <b>Formül kartı</b>'na bak.</li></ol>
+  <p class="small">Eski sınav kağıtlarındaki tüm sorular doğru cevaplarıyla ilgili konuların testlerinde "(Eski sınav sorusu)" etiketiyle var. Ağırlık elektrostatik + potansiyel + kondansatör üzerinde — kağıtlar bunu gösteriyor.</p></div>`;
+  h += `<h3>Konular</h3><div class="grid">`;
+  TOPICS.forEach(t=>{ const s=topicStats(t); const pct=s.total?Math.round(100*s.correct/s.total):0;
+    h += `<div class="tcard" onclick="go('topic:${t.id}')"><b>${t.name}</b><small>${s.total} soru · ${s.answered} çözüldü · ${s.correct} doğru</small><div class="bar"><i style="width:${pct}%"></i></div></div>`; });
+  h += `</div>`;
+  h += `<h3>Testler</h3><div class="grid">
+  <div class="tcard" onclick="go('general')"><b>🎲 Genel karışık test</b><small>Tüm konulardan rastgele, anında geri bildirim</small></div>
+  <div class="tcard" onclick="go('exam')"><b>⏱ Sınav simülasyonu</b><small>20 soru, 40 dakika, sonuç sonda</small></div>
+  <div class="tcard" onclick="go('wrong')"><b>❌ Yanlışlarım</b><small>${state.wrong.length} soru birikmiş</small></div></div>`;
+  return h;
+}
+
+function strategyHTML(){
+  return `<h2>Sınav stratejisi</h2><p class="sub">Eski kağıtlardan çıkardığım gözlemler ve geçmek için taktikler.</p>
+  <div class="card key"><b>Sınav formatı (eski kağıtlara göre)</b><ul>
+  <li>~15–17 çoktan seçmeli soru (A/B/C/D) + 1–2 "explain step by step" açık uçlu soru.</li>
+  <li>Sonunda bir <b>özet tablo</b> var: cevapları oraya yazıyorsun. <b>Boş bırakmak serbest</b> → muhtemelen yanlış cevap puan götürmüyor ama emin değilsen bile boş bırakmaktansa ele.</li>
+  <li>Soruların çoğu kavramsal ("which statement is incorrect?"). Hesap soruları basit: tek formül + birim çevirme.</li>
+  <li>Konular: Coulomb, alan, dipol, Gauss/akı, potansiyel, eşpotansiyel, kondansatör, dielektrik. Manyetizma kağıtlarda yok ama müfredatta olabilir — ikinci kısım olarak hazır ol.</li></ul></div>
+  <div class="card tip"><b>"Incorrect" sorularında taktik</b><br>Her şıkkı tek tek oku, doğru olanları çizerek ele. Genelde yanlış şık "always / never / independent / increases the field" gibi aşırı bir ifadedir. Dikkat: dört şıktan üçü doğru ifade olduğu için onlar da ders notu gibi — sınavdan sonra bile öğretici.</div>
+  <div class="card tip"><b>"Step by step" sorularında puan almak için</b><ol>
+  <li>Formülü sembolik yaz (F = kq₁q₂/(ε_r r²)).</li>
+  <li>Birimleri SI'ya çevir (cm² → m², nC → C) ve bunu göster.</li>
+  <li>Sayıları yerine koy, sonucu birimle yaz.</li>
+  <li>Bir cümle fiziksel yorum ekle ("attractive because opposite signs", "net flux is zero because no enclosed charge").</li></ol>
+  Hesap hatası yapsan bile adımlar doğruysa kısmi puan alırsın.</div>
+  <div class="card warn"><b>En sık yapılan 8 hata</b><ul>
+  <li>C = Q/V diye sığanın Q'ya bağlı olduğunu sanmak — <b>bağlı değil</b>, sadece geometri + dielektrik.</li>
+  <li>Dielektrik alanı artırır sanmak — <b>azaltır</b>.</li>
+  <li>Pil bağlı/bağlı değil ayrımını atlamak (V sabit mi, Q sabit mi?).</li>
+  <li>Alan sıfır = potansiyel sıfır sanmak — ikisi farklı (iki eşit + yükün ortası: E=0, V≠0).</li>
+  <li>ΔV=0 → "sonsuzda" sanmak — sadece eşit potansiyel demek.</li>
+  <li>Gauss'ta dış yüklerin/yüzey şeklinin akıyı etkilediğini sanmak — etkilemez.</li>
+  <li>Uzaklık yarıya → kuvvet 2 kat demek — <b>4 kat</b>.</li>
+  <li>cm², nC, μF çevirmeden hesaba girmek.</li></ul></div>`;
+}
+
+function topicHTML(t){
+  const s = topicStats(t);
+  return `<h2>${t.name}</h2><p class="sub">${s.total} soru · ${s.correct}/${s.answered} doğru</p>
+  <div class="row"><button class="btn" onclick="startQuiz('topic','${t.id}')">▶ Konu testini başlat (${s.total} soru)</button></div>
+  ${t.html}
+  <div class="row" style="margin-top:28px"><button class="btn" onclick="startQuiz('topic','${t.id}')">▶ Konu testini başlat</button></div>`;
+}
+
+function quizSetup(kind){
+  if(kind==='general') return `<h2>Genel karışık test</h2><p class="sub">Tüm konulardan rastgele sorular. Her sorudan sonra anında açıklama görürsün.</p>
+  <div class="row"><button class="btn" onclick="startQuiz('general',null,15)">15 soru</button><button class="btn" onclick="startQuiz('general',null,30)">30 soru</button><button class="btn" onclick="startQuiz('general',null,999)">Hepsi</button></div>
+  <div class="card"><b>İpucu:</b> Ağırlıklı (elektrostatik + kondansatör) karışık test istersen: <button class="btn sec" onclick="startQuiz('weighted',null,20)">Elektrostatik ağırlıklı 20 soru</button></div>`;
+  return `<h2>Sınav simülasyonu</h2><p class="sub">20 soru, 40 dakika. Cevaplar sonunda gösterilir — gerçek sınav gibi. Konuların ağırlığı eski kağıtlara göre (elektrostatik, potansiyel, kondansatör ağırlıklı, 3–4 soru manyetizma/devre).</p>
+  <div class="row"><button class="btn" onclick="startQuiz('exam',null,20)">▶ Sınavı başlat</button></div>`;
+}
+
+/* ===================== QUIZ ENGINE ===================== */
+let quiz = null, timerInt = null;
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function allQs(){ const out=[]; TOPICS.forEach(t=>t.qs.forEach((q,i)=>out.push({...q,tid:t.id,tname:t.short,idx:i}))); return out; }
+
+function startQuiz(mode, tid, n){
+  let pool;
+  if(mode==='topic') pool = allQs().filter(q=>q.tid===tid);
+  else if(mode==='wrong') pool = allQs().filter(q=>state.wrong.includes(qid(q.tid,q.idx)));
+  else if(mode==='weighted' || mode==='exam'){
+    const heavy=['coulomb','field','gauss','potential','capacitor'];
+    const h = shuffle(allQs().filter(q=>heavy.includes(q.tid)));
+    const l = shuffle(allQs().filter(q=>!heavy.includes(q.tid)));
+    const nl = Math.round(n*0.2); pool = h.slice(0,n-nl).concat(l.slice(0,nl));
+  } else pool = allQs();
+  pool = shuffle(pool).slice(0, n||pool.length);
+  if(!pool.length){ alertBox('Bu listede soru yok.'); return; }
+  quiz = {mode, items:pool, i:0, answers:{}, feedback: mode!=='exam', finished:false, timeLeft: mode==='exam'?40*60:null};
+  view={page:'quiz'}; render();
+  if(timerInt) clearInterval(timerInt);
+  if(quiz.timeLeft!==null){ timerInt=setInterval(()=>{ quiz.timeLeft--; const el=document.getElementById('timer'); if(el) el.textContent=fmt(quiz.timeLeft); if(quiz.timeLeft<=0){clearInterval(timerInt); finishQuiz();} },1000); }
+}
+function fmt(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+function alertBox(msg){ const m=document.getElementById('main'); m.insertAdjacentHTML('afterbegin',`<div class="card warn">${msg}</div>`); }
+
+function renderQuiz(){
+  const m = document.getElementById('main');
+  if(quiz.finished){ m.innerHTML = resultHTML(); return; }
+  const q = quiz.items[quiz.i]; const chosen = quiz.answers[quiz.i];
+  const letters=['A','B','C','D'];
+  let h = `<div class="q"><div class="meta"><span>Soru ${quiz.i+1} / ${quiz.items.length} · <span class="pill">${q.tname}</span></span>${quiz.timeLeft!==null?`<span class="timer" id="timer">${fmt(quiz.timeLeft)}</span>`:''}</div>
+  <div class="stem">${q.q}</div>`;
+  q.o.forEach((o,k)=>{
+    let cls='opt'; let dis='';
+    if(chosen!==undefined){ dis='disabled'; if(quiz.feedback){ if(k===q.a) cls+=' right'; else if(k===chosen) cls+=' wrong'; } else if(k===chosen) cls+=' sel'; }
+    h += `<button class="${cls}" ${dis} onclick="answer(${k})"><b>${letters[k]})</b> ${o}</button>`;
+  });
+  if(chosen!==undefined && quiz.feedback){
+    const ok = chosen===q.a;
+    h += `<div class="expl ${ok?'good':'badx'}"><b>${ok?'✅ Doğru!':'❌ Yanlış. Doğru cevap: '+letters[q.a]}</b>\n${q.e}</div>`;
+  }
+  h += `<div class="row" style="margin-top:18px">`;
+  if(quiz.i>0) h += `<button class="btn sec" onclick="quiz.i--;renderQuiz()">← Önceki</button>`;
+  if(quiz.i<quiz.items.length-1) h += `<button class="btn" onclick="quiz.i++;renderQuiz()" ${(chosen===undefined&&quiz.feedback)?'disabled':''}>Sonraki →</button>`;
+  else h += `<button class="btn ok" onclick="finishQuiz()">Testi bitir</button>`;
+  if(!quiz.feedback) h += `<span class="small">Cevaplanan: ${Object.keys(quiz.answers).length}/${quiz.items.length}</span>`;
+  h += `<button class="btn sec" style="margin-left:auto" onclick="if(confirmBox('Testten çıkılsın mı?')){quiz=null;go('home')}">Çık</button></div></div>`;
+  m.innerHTML = h;
+}
+function confirmBox(msg){ return true; }
+function answer(k){
+  if(quiz.feedback && quiz.answers[quiz.i]!==undefined) return;
+  quiz.answers[quiz.i]=k;
+  if(quiz.feedback) record(quiz.i);
+  renderQuiz();
+}
+function record(i){
+  const q = quiz.items[i]; const id = qid(q.tid,q.idx); const ok = quiz.answers[i]===q.a;
+  state.done[id]=ok;
+  if(ok) state.wrong = state.wrong.filter(x=>x!==id); else if(!state.wrong.includes(id)) state.wrong.push(id);
+  save();
+}
+function finishQuiz(){
+  if(timerInt) clearInterval(timerInt);
+  if(!quiz.feedback) quiz.items.forEach((_,i)=>{ if(quiz.answers[i]!==undefined) record(i); });
+  quiz.finished=true; renderNav(); renderQuiz(); window.scrollTo(0,0);
+}
+function resultHTML(){
+  const letters=['A','B','C','D'];
+  let c=0, blank=0; quiz.items.forEach((q,i)=>{ if(quiz.answers[i]===undefined) blank++; else if(quiz.answers[i]===q.a) c++; });
+  const n=quiz.items.length; const pct=Math.round(100*c/n);
+  const grade30 = Math.round(30*c/n);
+  let msg = pct>=80?'Harika, bu konuda hazırsın. 🎉':pct>=60?'Geçer seviyedesin ama yanlışları tekrar et. 👍':'Konu anlatımına geri dön, sonra tekrar dene. 💪';
+  let h = `<h2>Sonuç</h2><div class="card"><div class="score">${c} / ${n}</div><div>%${pct} · ${blank} boş · yaklaşık <b>${grade30}/30</b> (İtalyan notlama; 18 geçer)</div><p>${msg}</p>
+  <div class="row"><button class="btn" onclick="startQuiz('${quiz.mode}','${quiz.items[0].tid}',${n})">Tekrar çöz</button><button class="btn sec" onclick="go('wrong')">Yanlışlarıma git</button><button class="btn sec" onclick="go('home')">Ana sayfa</button></div></div>
+  <h3>Soru soru inceleme</h3>`;
+  quiz.items.forEach((q,i)=>{ const a=quiz.answers[i]; const ok=a===q.a;
+    h += `<div class="card" style="border-left:4px solid ${a===undefined?'var(--warn)':ok?'var(--ok)':'var(--bad)'}"><div class="small"><span class="pill">${q.tname}</span>${a===undefined?'Boş':ok?'Doğru':'Yanlış'}</div><div style="margin:6px 0;white-space:pre-line"><b>${i+1}.</b> ${q.q}</div>
+    <div class="small">Senin cevabın: ${a===undefined?'—':letters[a]+') '+q.o[a]}<br>Doğru cevap: <b>${letters[q.a]}) ${q.o[q.a]}</b></div><div class="expl" style="margin-top:8px">${q.e}</div></div>`; });
+  return h;
+}
+
+function wrongHTML(){
+  const n = state.wrong.length;
+  let h = `<h2>Yanlışlarım</h2><p class="sub">Daha önce yanlış yaptığın ${n} soru. Doğru çözünce listeden düşer.</p>`;
+  if(n) h += `<div class="row"><button class="btn" onclick="startQuiz('wrong')">▶ Yanlışları tekrar çöz</button><button class="btn sec" onclick="state.wrong=[];save();render()">Listeyi temizle</button></div>`;
+  else h += `<div class="card tip">Liste boş. Ya hiç yanlış yapmadın ya da henüz test çözmedin 🙂</div>`;
+  const all=allQs();
+  state.wrong.forEach(id=>{ const q=all.find(x=>qid(x.tid,x.idx)===id); if(!q) return;
+    h += `<div class="card"><span class="pill">${q.tname}</span><div style="margin:6px 0;white-space:pre-line">${q.q}</div><div class="small">Doğru: <b>${['A','B','C','D'][q.a]}) ${q.o[q.a]}</b></div><div class="expl" style="margin-top:8px">${q.e}</div></div>`; });
+  return h;
+}
+function progressHTML(){
+  let h = `<h2>İlerleme</h2><p class="sub">Her konudaki son durumun. Hedef: her konuda %80+.</p><table><tr><th>Konu</th><th>Çözülen</th><th>Doğru</th><th>Başarı</th></tr>`;
+  let T=0,A=0,C=0;
+  TOPICS.forEach(t=>{const s=topicStats(t); T+=s.total;A+=s.answered;C+=s.correct; const pct=s.answered?Math.round(100*s.correct/s.answered):0;
+    h += `<tr><td>${t.name}</td><td>${s.answered}/${s.total}</td><td>${s.correct}</td><td style="color:${pct>=80?'var(--ok)':pct>=60?'var(--warn)':'var(--bad)'}">${s.answered?pct+'%':'—'}</td></tr>`; });
+  h += `<tr><th>Toplam</th><th>${A}/${T}</th><th>${C}</th><th>${A?Math.round(100*C/A)+'%':'—'}</th></tr></table>
+  <div class="row" style="margin-top:20px"><button class="btn sec" onclick="if(true){state={done:{},wrong:[]};save();render()}">Tüm ilerlemeyi sıfırla</button></div>
+  <p class="small">İlerleme bu tarayıcıda saklanır; başka cihazda sıfırdan başlar.</p>`;
+  return h;
+}
+
+render();
+</script>
+</body>
+</html>
